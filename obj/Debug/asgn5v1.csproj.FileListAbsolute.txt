@@ -6,3 +6,11 @@ C:\Documents and Settings\00729757\Desktop\COMP4560\Comp4560200810\asgn5student\
 C:\Documents and Settings\00729757\Desktop\COMP4560\Comp4560200810\asgn5student\obj\Debug\asgn5v1.AboutDialogBox.resources
 C:\Documents and Settings\00729757\Desktop\COMP4560\Comp4560200810\asgn5student\obj\Debug\asgn5v1.Transformer.resources
 C:\Documents and Settings\00729757\Desktop\COMP4560\Comp4560200810\asgn5student\obj\Debug\asgn5v1.csproj.GenerateResource.Cache
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.exe
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.pdb
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\bin\Debug\asgn5v1.exe
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\bin\Debug\asgn5v1.pdb
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.csprojResolveAssemblyReference.cache
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.AboutDialogBox.resources
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.Transformer.resources
+C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.csproj.GenerateResource.Cache
