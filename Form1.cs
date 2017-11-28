@@ -315,7 +315,7 @@ namespace asgn5v1
             // 
             // Transformer
             // 
-            this.AutoScaleBaseSize = new System.Drawing.Size(8, 19);
+            this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(508, 306);
             this.Controls.Add(this.toolBar1);
             this.Name = "Transformer";
@@ -416,7 +416,7 @@ namespace asgn5v1
 				} while (text != null);
 				reader.Close();
 				DecodeCoords(coorddata);
-                //GetShapeDimensions();
+                GetShapeDimensions();
                 //GetShapeCentre();
             }
 			else
@@ -505,6 +505,7 @@ namespace asgn5v1
 		{
 			if (e.Button == transleftbtn)
 			{
+
 				Refresh();
 			}
 			if (e.Button == transrightbtn) 
@@ -517,12 +518,13 @@ namespace asgn5v1
 			}
 			
 			if(e.Button == transdownbtn)
-			{
-				Refresh();
+            {
+                Refresh();
 			}
 			if (e.Button == scaleupbtn) 
 			{
-				Refresh();
+                //scaleUp(ctrans);
+                Refresh();
 			}
 			if (e.Button == scaledownbtn) 
 			{
@@ -598,10 +600,11 @@ namespace asgn5v1
                 {
                     min = vertices[i + 1, 0];
                     //Save the x value of the coordinate point
-                    minx = vertices[i+1, 0];
+                    minx = vertices[i + 1, 0];
                 }
             }
             shapewidth = max - min;
+            Console.WriteLine("Width " + shapewidth);
 
             max = vertices[0, 1];
             min = vertices[0, 1];
@@ -623,6 +626,7 @@ namespace asgn5v1
                 }
             }
             shapeheight = max - min;
+            Console.WriteLine("Height "+ shapeheight);
 
             max = vertices[0, 2];
             min = vertices[0, 2];
@@ -644,8 +648,9 @@ namespace asgn5v1
                 }
             }
             shapedepth = max - min;
+            Console.WriteLine("Depth " + shapedepth);
         }
-		
+
         //Get the centre point of the shape
         private void GetShapeCentre()
         {
@@ -656,34 +661,89 @@ namespace asgn5v1
 
         private void SetInitialTransformation(double[,] A)
         {
-            double[,] screencentre = new double[1, 2];
+            double[] screencentre = new double[2];
             //Get the centre coordinate for the form
-            screencentre[0, 0] = ClientRectangle.Width / 2;
-            screencentre[0, 1] = ClientRectangle.Height / 2;
-            //Get the factor by which to scale the shape
-            //double scalefactor = (306/2) / 11.5;
+            screencentre[0] = this.Width / 2;
+            screencentre[1] = this.Height / 2;
+            //Console.WriteLine("Width = " + screencentre[0]);
+            //Console.WriteLine("Height = " + screencentre[1]);
 
-            A[0, 0] = 13.3;
-            A[0, 1] = 0;
-            A[0, 2] = 0;
-            A[0, 3] = 0;
+            // Translateing -10 left and -10 up
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -10, -10, 0, 1 } };
+            matMult(A, B);
 
-            A[1, 0] = 0;
-            A[1, 1] = -13.3;
-            A[1, 2] = 0;
-            A[1, 3] = 0;
+            // Reflecting in x-axis
+            double[,] C = new double[,] { { 1, 0, 0, 0 }, { 0, -1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            matMult(A, C);
+
+            // Get the factor by which to scale the shape
+            double scalefactor = this.Height / 2 / 21;
+            double[,] D = new double[,] { { scalefactor, 0, 0, 0 }, { 0, scalefactor, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            matMult(A, D);
+
+            // Translating Width/2 right and Height/2 Down
+            double[,] E = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { this.Width / 2, this.Height / 2, 0, 1 } };
+            matMult(A, E);
+
+            // Size after transformations
+            Console.WriteLine("+.+.+.+.+.+.+.+.+.+.+.+.+.+");
+            GetShapeDimensions();
+        }
+
+        // Implementing Matrix Multiplication
+        private void matMult(double[,] A, double[,] B)
+        {
+            // To hold the product of multiplication temporarily
+            double[,] temp = new double[4, 4];
+
+            // GetLength(i) returns the number of elements in the ith dimension.
+            if (A.GetLength(1) == 4 && B.GetLength(0) == 4) {
+                for (int outer = 0; outer < A.GetLength(0); outer++)
+                {
+                    for (int inner = 0; inner < B.GetLength(1); inner++)
+                    {
+                        for (int ab = 0; ab < B.GetLength(1); ab++)
+                        {
+                            temp[outer,inner] += A[outer,ab] * B[ab,inner];
+                        }
+                    }
+                }
+            }
+
+            // Putting the multiplication result back in A
+            for (int r = 0; r< 4; r++)
+            {
+                for (int c= 0; c< 4;c++)
+                {
+                    A[r, c] = temp[r, c];
+                }
+            }
+
+        }
+
+        private void scaleUp(double[,] A)
+        {
+            A[0, 0] = 13.3*2;
+            A[0, 1] = 0 * 2;
+            A[0, 2] = 0 * 2;
+            A[0, 3] = 0 * 2;
+
+            A[1, 0] = 0 * 2;
+            A[1, 1] = -13.3 * 2;
+            A[1, 2] = 0 * 2;
+            A[1, 3] = 0 * 2;
 
             A[2, 0] = 0;
             A[2, 1] = 0;
             A[2, 2] = 1;
             A[2, 3] = 0;
 
-            A[3, 0] = 121;
-            A[3, 1] = 286;
+            A[3, 0] = 121 * 2;
+            A[3, 1] = 286 * 2;
             A[3, 2] = 0;
-            A[3, 3] = 1;
+            A[3, 3] = 1 * 2;
         }
-	}
+    }
 
 	
 }
