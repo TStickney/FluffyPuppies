@@ -24,6 +24,7 @@ namespace asgn5v1
 		bool gooddata = false;		
 		double[,] vertices;
 		double[,] scrnpts;
+        double[,] initialImage;
 		double[,] ctrans = new double[4,4];  //your main transformation matrix
         double shapeheight = 0.0d; //height of the imported shape
         double shapewidth = 0.0d; //width of the imported shape
@@ -536,39 +537,58 @@ namespace asgn5v1
 			}
 			if (e.Button == rotxby1btn) 
 			{
-				
-			}
+                rotateX(ctrans);
+                Refresh();
+            }
 			if (e.Button == rotyby1btn) 
 			{
-				
-			}
+                rotateY(ctrans);
+                Refresh();
+            }
 			if (e.Button == rotzby1btn) 
 			{
-				
-			}
+                rotateZ(ctrans);
+                Refresh();
+            }
 
 			if (e.Button == rotxbtn) 
 			{
-				
-			}
-			if (e.Button == rotybtn) 
+                for (int i = 0; i >= 0; i++)
+                {
+                    rotateX(ctrans);
+                    Refresh();
+                }
+
+            }
+
+            if (e.Button == rotybtn) 
 			{
-				
-			}
+                //for (int i = 0; i >= 0; i++)
+                //{
+                //    rotateY(ctrans);
+                //    Refresh();
+                //}
+            }
 			
 			if (e.Button == rotzbtn) 
 			{
-				
-			}
+                //for (int i = 0; i >= 0; i++)
+                //{
+                //    rotateZ(ctrans);
+                //    Refresh();
+                //}
+            }
 
 			if(e.Button == shearleftbtn)
 			{
-				Refresh();
+                shearLeft(ctrans);
+                Refresh();
 			}
 
 			if (e.Button == shearrightbtn) 
 			{
-				Refresh();
+                shearRight(ctrans);
+                Refresh();
 			}
 
 			if (e.Button == resetbtn)
@@ -678,13 +698,21 @@ namespace asgn5v1
 
             // Get the factor by which to scale the shape
             double scalefactor = this.Height / 2 / 21;
-            double[,] D = new double[,] { { scalefactor, 0, 0, 0 }, { 0, scalefactor, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            double[,] D = new double[,] { { scalefactor, 0, 0, 0 }, { 0, scalefactor, 0, 0 }, { 0, 0, scalefactor, 0 }, { 0, 0, 0, 1 } };
             matMult(A, D);
 
             // Translating Width/2 right and Height/2 Down
             double[,] E = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, {screencentre[0], screencentre[1], 0, 1 } };
             matMult(A, E);
-            
+
+            for (int i = 0; i < scrnpts.GetLength(0); i++)
+            {
+                for (int j = 0; j < scrnpts.GetLength(1); j++)
+                {
+                    initialImage[i, j] = scrnpts[i, j];
+                }
+            }
+
         }
 
         // Implementing Matrix Multiplication
@@ -723,9 +751,10 @@ namespace asgn5v1
         {
             double transX = shapecentre[0];
             double transY = shapecentre[1];
+            double transZ = shapecentre[2];
 
             // Translating back to 0,0
-            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, 0, 1 } };
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
             matMult(A, B);
 
             // Get the factor by which to scale the shape
@@ -734,7 +763,7 @@ namespace asgn5v1
             matMult(A, C);
 
             // Translating back to initial Position
-            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, 0, 1 } };
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
             matMult(A, D);
         }
 
@@ -743,18 +772,19 @@ namespace asgn5v1
         {
             double transX = shapecentre[0];
             double transY = shapecentre[1];
+            double transZ = shapecentre[2];
 
             // Translating back to 0,0
-            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, 0, 1 } };
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
             matMult(A, B);
 
             // Get the factor by which to scale the shape
             double scalefactor = 1.1;
-            double[,] C = new double[,] { { 1/scalefactor, 0, 0, 0 }, { 0, 1/scalefactor, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            double[,] C = new double[,] { { 1/scalefactor, 0, 0, 0 }, { 0, 1/scalefactor, 0, 0 }, { 0, 0, 1/scalefactor, 0 }, { 0, 0, 0, 1 } };
             matMult(A, C);
 
             // Translating back to initial Position
-            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, 0, 1 } };
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
             matMult(A, D);
         }
 
@@ -789,21 +819,107 @@ namespace asgn5v1
         // Rotating around x-axis by 0.05 radians on each click
         private void rotateX(double[,] A)
         {
+            double transX = shapecentre[0];
+            double transY = shapecentre[1];
+            double transZ = shapecentre[2];
 
+            // Translating back to 0,0
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
+            matMult(A, B);
+
+            // Rotating around x-axis
+            double[,] C = new double[,] { { 1, 0, 0, 0 }, { 0, Math.Cos(0.05), -Math.Sin(0.05), 0 }, { 0, Math.Sin(0.05), Math.Cos(0.05), 0 }, { 0, 0, 0, 1 } };
+            matMult(A, C);
+
+            // Translating back to initial Position
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
+            matMult(A, D);
         }
 
         // Rotating around y-axis by 0.05 radians on each click
         private void rotateY(double[,] A)
         {
+            double transX = shapecentre[0];
+            double transY = shapecentre[1];
+            double transZ = shapecentre[2];
 
+            // Translating back to 0,0
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
+            matMult(A, B);
+
+            // Rotating around y-axis
+            double[,] C = new double[,] { { Math.Cos(0.05), 0, -Math.Sin(0.05), 0 }, { 0, 1, 0, 0 }, { Math.Sin(0.05), 0, Math.Cos(0.05), 0 }, { 0, 0, 0, 1 } };
+            matMult(A, C);
+
+            // Translating back to initial Position
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
+            matMult(A, D);
         }
 
         // Rotating around z-axis by 0.05 radians on each click
         private void rotateZ(double[,] A)
         {
+            double transX = shapecentre[0];
+            double transY = shapecentre[1];
+            double transZ = shapecentre[2];
 
+            // Translating back to 0,0
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
+            matMult(A, B);
+
+            // Rotating around x-axis
+            double[,] C = new double[,] { { Math.Cos(0.05), -Math.Sin(0.05), 0, 0 }, { Math.Sin(0.05), Math.Cos(0.05), 0, 0 }, { 0,0, 1, 0 }, { 0, 0, 0, 1 } };
+            matMult(A, C);
+
+            // Translating back to initial Position
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
+            matMult(A, D);
         }
-    }
 
-	
+        // Shearing left
+        private void shearLeft(double[,] A)
+        {
+            double topHeight = shapecentre[1] - miny; // Height of top half of the image
+            double transX = minx;
+            double transY = miny + 2*topHeight;
+            double transZ = shapecentre[2];
+
+            // Translating back to 0,0
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, {-transX, -transY, -transZ, 1 } };
+            matMult(A, B);
+
+            // Shearing in the left direction
+            double[,] C = new double[,] { {1, 0, 0, 0 }, { 0.1, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            matMult(A, C);
+
+            // Translating back to initial Position
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
+            matMult(A, D);
+        }
+
+        // Shearing Right
+        private void shearRight(double[,] A)
+        {
+            double topHeight = shapecentre[1] - miny; // Height of top half of the image
+            double transX = minx;
+            double transY = miny + 2 * topHeight;
+            double transZ = shapecentre[2];
+
+            // Translating back to 0,0
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
+            matMult(A, B);
+
+            // Shearing in the left direction
+            double[,] C = new double[,] { { 1, 0, 0, 0 }, { -0.1, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
+            matMult(A, C);
+
+            // Translating back to initial Position
+            double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
+            matMult(A, D);
+        }
+
+    }
+    
+    // Reset image to its initial position
+    // Continous Rotation
 }
