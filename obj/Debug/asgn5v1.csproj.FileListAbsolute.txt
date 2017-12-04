@@ -14,3 +14,13 @@ C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.csprojReso
 C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.AboutDialogBox.resources
 C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.Transformer.resources
 C:\Users\Taryn\Documents\BCIT\Graphics\asgn5student\obj\Debug\asgn5v1.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\FluffyPuppies\bin\Debug\asgn5v1.exe.config
+C:\Users\Administrator\Desktop\FluffyPuppies\bin\Debug\asgn5v1.exe
+C:\Users\Administrator\Desktop\FluffyPuppies\bin\Debug\asgn5v1.pdb
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.AboutDialogBox.resources
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.Transformer.resources
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.csproj.GenerateResource.Cache
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.csproj.CoreCompileInputs.cache
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.exe
+C:\Users\Administrator\Desktop\FluffyPuppies\obj\Debug\asgn5v1.pdb
