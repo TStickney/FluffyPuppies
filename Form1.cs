@@ -34,6 +34,7 @@ namespace asgn5v1
         double minz = 0.0d; //coordinate with the smallest z value
         double[] shapecentre = new double[3]; //centre point of the imported shape
         int[,] lines;
+        Timer timer;
 
         private System.Windows.Forms.ImageList tbimages;
 		private System.Windows.Forms.ToolBar toolBar1;
@@ -86,13 +87,38 @@ namespace asgn5v1
 				new EventHandler(MenuAboutOnClick));
 			Menu = new MainMenu(new MenuItem[] {miFile, miAbout});
 
-			
-		}
+            initializeTimer();
+        }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+        void initializeTimer()
+        {
+            timer = new Timer();
+            timer.Interval = 50; // msec
+        }
+
+
+        void timer_tickX(object sender, EventArgs e)
+        {
+            rotateX(ctrans);
+            Refresh();
+        }
+
+        void timer_tickY(object sender, EventArgs e)
+        {
+            rotateY(ctrans);
+            Refresh();
+        }
+
+        void timer_tickZ(object sender, EventArgs e)
+        {
+            rotateZ(ctrans);
+            Refresh();
+        }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			if( disposing )
 			{
@@ -515,94 +541,117 @@ namespace asgn5v1
 		{
 			if (e.Button == transleftbtn)
 			{
+                timer.Stop();
                 translateLeft(ctrans);
                 Refresh();
 			}
 			if (e.Button == transrightbtn) 
 			{
+                timer.Stop();
                 translateRight(ctrans);
                 Refresh();
 			}
 			if (e.Button == transupbtn)
 			{
+                timer.Stop();
                 translateUp(ctrans);
 				Refresh();
 			}
 			
 			if(e.Button == transdownbtn)
             {
+                timer.Stop();
                 translateDown(ctrans);
                 Refresh();
 			}
 			if (e.Button == scaleupbtn) 
 			{
+                timer.Stop();
                 scaleUp(ctrans);
                 Refresh();
 			}
 			if (e.Button == scaledownbtn) 
 			{
+                timer.Stop();
                 scaleDown(ctrans);
                 Refresh();
 			}
 			if (e.Button == rotxby1btn) 
 			{
+                timer.Stop();
                 rotateX(ctrans);
                 Refresh();
             }
 			if (e.Button == rotyby1btn) 
 			{
+                timer.Stop();
                 rotateY(ctrans);
                 Refresh();
             }
 			if (e.Button == rotzby1btn) 
 			{
+                timer.Stop();
                 rotateZ(ctrans);
                 Refresh();
             }
 
 			if (e.Button == rotxbtn) 
 			{
-                for (int i = 0; i >= 0; i++)
+                timer.Tick += new EventHandler(timer_tickX);
+                if (timer.Enabled)
                 {
-                    rotateX(ctrans);
-                    Refresh();
+                    timer.Stop();
                 }
-
+                else
+                {
+                    timer.Start();
+                }
             }
 
             if (e.Button == rotybtn) 
 			{
-                //for (int i = 0; i >= 0; i++)
-                //{
-                //    rotateY(ctrans);
-                //    Refresh();
-                //}
+                timer.Tick += new EventHandler(timer_tickY);
+                if (timer.Enabled)
+                {
+                    timer.Stop();
+                }
+                else
+                {
+                    timer.Start();
+                }
             }
 			
 			if (e.Button == rotzbtn) 
 			{
-                //for (int i = 0; i >= 0; i++)
-                //{
-                //    rotateZ(ctrans);
-                //    Refresh();
-                //}
+                timer.Tick += new EventHandler(timer_tickZ);
+                if (timer.Enabled)
+                {
+                    timer.Stop();
+                }
+                else
+                {
+                    timer.Start();
+                }
             }
 
 			if(e.Button == shearleftbtn)
 			{
+                timer.Stop();
                 shearLeft(ctrans);
                 Refresh();
 			}
 
 			if (e.Button == shearrightbtn) 
 			{
+                timer.Stop();
                 shearRight(ctrans);
                 Refresh();
 			}
 
 			if (e.Button == resetbtn)
 			{
-				RestoreInitialImage();
+                timer.Stop();
+                RestoreInitialImage();
 			}
 
 			if(e.Button == exitbtn) 
