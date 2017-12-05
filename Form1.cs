@@ -377,7 +377,7 @@ namespace asgn5v1
 		{
 			//MessageBox.Show("New Data item clicked.");
 			gooddata = GetNewData();
-            RestoreInitialImage();			
+            SetInitialTransformation(ctrans);			
 		}
 
 		void MenuFileExitOnClick(object obj, EventArgs ea)
@@ -394,9 +394,19 @@ namespace asgn5v1
 		void RestoreInitialImage()
 		{
             Invalidate();
+            for (int i = 0; i < scrnpts.GetLength(0); i++)
+            {
+                for (int j = 0; j < scrnpts.GetLength(1); j++)
+                {
+                    scrnpts[i, j] = initialImage[i, j];
+                }
+            }
             //set the transformation matrix
+            setIdentity(ctrans, 4, 4);
+
+            // Do initial Tansformations again
             SetInitialTransformation(ctrans);
-		} // end of RestoreInitialImage
+        } // end of RestoreInitialImage
 
 		bool GetNewData()
 		{
@@ -417,8 +427,6 @@ namespace asgn5v1
 				} while (text != null);
 				reader.Close();
 				DecodeCoords(coorddata);
-                //GetShapeDimensions();
-                //GetShapeCentre();
             }
 			else
 			{
@@ -446,6 +454,7 @@ namespace asgn5v1
 				return false;
 			}
 			scrnpts = new double[numpts,4];
+            initialImage = new double[numpts,4];
 			setIdentity(ctrans,4,4);  //initialize transformation matrix to identity
 			return true;
 		} // end of GetNewData
@@ -682,6 +691,7 @@ namespace asgn5v1
 
         private void SetInitialTransformation(double[,] A)
         {
+            Invalidate();
             double[] screencentre = new double[2];
 
             //Get the centre coordinate for the form
