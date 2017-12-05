@@ -34,7 +34,7 @@ namespace asgn5v1
         double minz = 0.0d; //coordinate with the smallest z value
         double[] shapecentre = new double[3]; //centre point of the imported shape
         int[,] lines;
-        Timer timer;
+        Timer timerX, timerY, timerZ;
 
         private System.Windows.Forms.ImageList tbimages;
 		private System.Windows.Forms.ToolBar toolBar1;
@@ -92,8 +92,17 @@ namespace asgn5v1
 
         void initializeTimer()
         {
-            timer = new Timer();
-            timer.Interval = 50; // msec
+            timerX = new Timer();
+            timerX.Interval = 50; // msec
+            timerX.Tick += new EventHandler(timer_tickX);
+
+            timerY = new Timer();
+            timerY.Interval = 50; // msec
+            timerY.Tick += new EventHandler(timer_tickY);
+
+            timerZ = new Timer();
+            timerZ.Interval = 50; // 
+            timerZ.Tick += new EventHandler(timer_tickZ);
         }
 
 
@@ -541,116 +550,143 @@ namespace asgn5v1
 		{
 			if (e.Button == transleftbtn)
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 translateLeft(ctrans);
                 Refresh();
 			}
 			if (e.Button == transrightbtn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 translateRight(ctrans);
                 Refresh();
 			}
 			if (e.Button == transupbtn)
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 translateUp(ctrans);
 				Refresh();
 			}
 			
 			if(e.Button == transdownbtn)
             {
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 translateDown(ctrans);
                 Refresh();
 			}
 			if (e.Button == scaleupbtn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 scaleUp(ctrans);
                 Refresh();
 			}
 			if (e.Button == scaledownbtn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 scaleDown(ctrans);
                 Refresh();
 			}
 			if (e.Button == rotxby1btn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 rotateX(ctrans);
                 Refresh();
             }
 			if (e.Button == rotyby1btn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 rotateY(ctrans);
                 Refresh();
             }
 			if (e.Button == rotzby1btn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 rotateZ(ctrans);
                 Refresh();
             }
 
 			if (e.Button == rotxbtn) 
 			{
-                timer.Tick += new EventHandler(timer_tickX);
-                if (timer.Enabled)
+                if (timerZ.Enabled || timerX.Enabled || timerY.Enabled)
                 {
-                    timer.Stop();
+                    timerX.Stop();
+                    timerY.Stop();
+                    timerZ.Stop();
                 }
                 else
                 {
-                    timer.Start();
+                    timerX.Start();
                 }
             }
 
             if (e.Button == rotybtn) 
 			{
-                timer.Tick += new EventHandler(timer_tickY);
-                if (timer.Enabled)
+                if (timerZ.Enabled || timerX.Enabled || timerY.Enabled)
                 {
-                    timer.Stop();
+                    timerX.Stop();
+                    timerY.Stop();
+                    timerZ.Stop();
                 }
                 else
                 {
-                    timer.Start();
+                    timerY.Start();
                 }
             }
 			
 			if (e.Button == rotzbtn) 
 			{
-                timer.Tick += new EventHandler(timer_tickZ);
-                if (timer.Enabled)
+                if (timerZ.Enabled || timerX.Enabled || timerY.Enabled)
                 {
-                    timer.Stop();
+                    timerX.Stop();
+                    timerY.Stop();
+                    timerZ.Stop();
                 }
                 else
                 {
-                    timer.Start();
+                    timerZ.Start();
                 }
             }
 
 			if(e.Button == shearleftbtn)
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 shearLeft(ctrans);
                 Refresh();
 			}
 
 			if (e.Button == shearrightbtn) 
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 shearRight(ctrans);
                 Refresh();
 			}
 
 			if (e.Button == resetbtn)
 			{
-                timer.Stop();
+                timerX.Stop();
+                timerY.Stop();
+                timerZ.Stop();
                 RestoreInitialImage();
 			}
 
@@ -813,17 +849,18 @@ namespace asgn5v1
             double transZ = shapecentre[2];
 
             // Translating back to 0,0
-            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
-            matMult(A, B);
+            double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } }; 
 
             // Get the factor by which to scale the shape
             double scalefactor = 1.1;
             double[,] C = new double[,] { { scalefactor, 0, 0, 0 }, { 0, scalefactor, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
         // Scaling down by 10%
@@ -835,16 +872,17 @@ namespace asgn5v1
 
             // Translating back to 0,0
             double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
-            matMult(A, B);
 
             // Get the factor by which to scale the shape
             double scalefactor = 1.1;
             double[,] C = new double[,] { { 1/scalefactor, 0, 0, 0 }, { 0, 1/scalefactor, 0, 0 }, { 0, 0, 1/scalefactor, 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
         // Translating left by 75 pixels on each click
@@ -884,15 +922,16 @@ namespace asgn5v1
 
             // Translating back to 0,0
             double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
-            matMult(A, B);
 
             // Rotating around x-axis
             double[,] C = new double[,] { { 1, 0, 0, 0 }, { 0, Math.Cos(0.05), -Math.Sin(0.05), 0 }, { 0, Math.Sin(0.05), Math.Cos(0.05), 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
         // Rotating around y-axis by 0.05 radians on each click
@@ -904,15 +943,16 @@ namespace asgn5v1
 
             // Translating back to 0,0
             double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
-            matMult(A, B);
 
             // Rotating around y-axis
             double[,] C = new double[,] { { Math.Cos(0.05), 0, -Math.Sin(0.05), 0 }, { 0, 1, 0, 0 }, { Math.Sin(0.05), 0, Math.Cos(0.05), 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
         // Rotating around z-axis by 0.05 radians on each click
@@ -924,15 +964,16 @@ namespace asgn5v1
 
             // Translating back to 0,0
             double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
-            matMult(A, B);
 
             // Rotating around x-axis
             double[,] C = new double[,] { { Math.Cos(0.05), -Math.Sin(0.05), 0, 0 }, { Math.Sin(0.05), Math.Cos(0.05), 0, 0 }, { 0,0, 1, 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
         // Shearing left
@@ -945,15 +986,16 @@ namespace asgn5v1
 
             // Translating back to 0,0
             double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, {-transX, -transY, -transZ, 1 } };
-            matMult(A, B);
 
             // Shearing in the left direction
             double[,] C = new double[,] { {1, 0, 0, 0 }, { 0.1, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
         // Shearing Right
@@ -966,15 +1008,16 @@ namespace asgn5v1
 
             // Translating back to 0,0
             double[,] B = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { -transX, -transY, -transZ, 1 } };
-            matMult(A, B);
 
             // Shearing in the left direction
             double[,] C = new double[,] { { 1, 0, 0, 0 }, { -0.1, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } };
-            matMult(A, C);
+            matMult(B, C);
 
             // Translating back to initial Position
             double[,] D = new double[,] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { transX, transY, transZ, 1 } };
-            matMult(A, D);
+            matMult(B, D);
+
+            matMult(A, B);
         }
 
     }
